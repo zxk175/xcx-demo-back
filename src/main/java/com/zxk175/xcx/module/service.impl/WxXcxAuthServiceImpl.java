@@ -3,6 +3,7 @@ package com.zxk175.xcx.module.service.impl;
 import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.github.sd4324530.jtuple.Tuple2;
+import com.zxk175.xcx.bean.WxXcxDecodePhoneParam;
 import com.zxk175.xcx.bean.WxXcxLoginParam;
 import com.zxk175.xcx.common.Response;
 import com.zxk175.xcx.common.consts.Const;
@@ -29,7 +30,16 @@ public class WxXcxAuthServiceImpl implements IWxXcxAuthService {
 
     @Override
     public Response<?> authLogin(WxXcxLoginParam param) {
-        Tuple2<JSONObject, Response<?>> tuple = WxXcxAccessUtil.getSession(redisService, param.getCode());
+        return decodeCommon(param.getIv(), param.getCode(), param.getEncryptedData());
+    }
+
+    @Override
+    public Response<?> decodePhone(WxXcxDecodePhoneParam param) {
+        return decodeCommon(param.getIv(), null, param.getEncryptedData());
+    }
+
+    private Response<?> decodeCommon(String iv, String code, String encryptedData) {
+        Tuple2<JSONObject, Response<?>> tuple = WxXcxAccessUtil.getSession(redisService, code);
         JSONObject result = tuple.first;
         if (ObjectUtil.isNull(result)) {
             return tuple.second;
@@ -39,7 +49,7 @@ public class WxXcxAuthServiceImpl implements IWxXcxAuthService {
         String sessionKey = result.getString(Const.JSON_SESSION_KEY);
 
         // 解密encryptedData加密数据
-        String decryptResult = AesUtil.decrypt(param.getEncryptedData(), sessionKey, param.getIv(), Const.UTF_8);
+        String decryptResult = AesUtil.decrypt(encryptedData, sessionKey, iv, Const.UTF_8);
 
         return Response.success(FastJsonUtil.toObject(decryptResult, JSONObject.class));
     }

@@ -1,0 +1,33 @@
+ext.vers = [
+        project_group   : "com.zxk175",
+        project_version : "1.0.0",
+        project_encoding: "UTF-8",
+
+        spring_boot     : "2.2.5.RELEASE",
+
+        fast_json       : "1.2.66",
+        swagger2        : "2.7.0",
+
+        hutool          : "5.2.3",
+]
+
+ext.libs = [
+        lombok       : "org.projectlombok:lombok",
+
+        boot_web     : "org.springframework.boot:spring-boot-starter-web",
+        boot_redis   : "org.springframework.boot:spring-boot-starter-data-redis",
+        boot_undertow: "org.springframework.boot:spring-boot-starter-undertow",
+        boot_actuator: "org.springframework.boot:spring-boot-starter-actuator",
+        boot_test    : "org.springframework.boot:spring-boot-starter-test",
+
+        swagger2     : "io.springfox:springfox-swagger2:${vers.swagger2}",
+        swagger2_ui  : "io.springfox:springfox-swagger-ui:${vers.swagger2}",
+
+        fast_json    : "com.alibaba:fastjson:${vers.fast_json}",
+        hutool_core  : "cn.hutool:hutool-core:${vers.hutool}",
+
+        bcprov_jdk15 : 'org.bouncycastle:bcprov-jdk15on:1.64',
+        commons_pool2: "org.apache.commons:commons-pool2:2.8.0",
+        okhttp3      : "com.squareup.okhttp3:okhttp:3.14.4",
+        tuple        : "com.github.sd4324530:JTuple:1.2.1",
+]

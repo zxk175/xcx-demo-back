@@ -1,70 +1,105 @@
 buildscript {
+    apply from: "depend.gradle"
+
     repositories {
         mavenLocal()
 
-        maven { url 'http://maven.aliyun.com/nexus/content/groups/public' }
-        maven { url 'https://maven.aliyun.com/repository/jcenter' }
-        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url "http://maven.aliyun.com/nexus/content/groups/public" }
+        maven { url "https://maven.aliyun.com/repository/jcenter" }
+        maven { url "https://maven.aliyun.com/repository/google" }
+    }
+
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${vers.spring_boot}")
     }
 }
 
-plugins {
-    id 'org.springframework.boot' version '2.2.5.RELEASE'
-    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
-    id 'java'
-}
+allprojects {
+    group vers.project_group
+    version vers.project_version
 
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
+    tasks.withType(JavaCompile) {
+        options.setEncoding(vers.project_encoding as String)
+        options.compilerArgs << "-Xlint:deprecation"
+    }
+
+    repositories {
+        mavenLocal()
+
+        maven { url "http://maven.aliyun.com/nexus/content/groups/public" }
+        maven { url "https://maven.aliyun.com/repository/jcenter" }
+        maven { url "https://maven.aliyun.com/repository/google" }
     }
 }
 
-repositories {
-    mavenLocal()
+// 所有子项目的通用配置
+subprojects { subPro ->
+    apply plugin: "java"
+    apply plugin: "idea"
+    apply plugin: "io.spring.dependency-management"
 
-    maven { url 'http://maven.aliyun.com/nexus/content/groups/public' }
-    maven { url 'https://maven.aliyun.com/repository/jcenter' }
-    maven { url 'https://maven.aliyun.com/repository/google' }
-}
+    // Jdk版本
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 
-bootJar {
-    setArchivesBaseName("xcx-demo")
-}
+    configurations {
+        // 全局性的关闭依赖传递特性
+        all {
+            transitive = true
+        }
 
-group = 'com.zxk175'
-version = '1.0.0'
-sourceCompatibility = '1.8'
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
 
-dependencies {
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-
-    implementation 'org.springframework.boot:spring-boot-starter'
-    implementation('org.springframework.boot:spring-boot-starter-web') {
-        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+        // 所有需要忽略的包定义在此
+        // group是必选项，module可选
+        compile.exclude group: "org.apache.tomcat"
+        compile.exclude module: "undertow-websockets-jsr"
+        // 在整个构建过程中排除
+        all*.exclude module: "spring-boot-starter-tomcat"
     }
 
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-    implementation 'org.springframework.boot:spring-boot-starter-undertow'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    dependencies {
+        testImplementation libs.boot_test
 
-    implementation 'cn.hutool:hutool-core:5.2.3'
-    implementation 'com.alibaba:fastjson:1.2.66'
-    implementation 'com.github.sd4324530:JTuple:1.2.1'
-    implementation 'com.squareup.okhttp3:okhttp:3.14.2'
-    implementation 'org.bouncycastle:bcprov-jdk15on:1.64'
-    implementation 'io.springfox:springfox-swagger2:2.7.0'
-    implementation 'io.springfox:springfox-swagger-ui:2.7.0'
-    implementation 'org.apache.commons:commons-pool2:2.8.0'
+        // 引入根目录和各子项目下的libs中的jar包
+        def rootProjectLibs = new File(rootProject.rootDir, "libs").getAbsolutePath()
 
-    testImplementation('org.springframework.boot:spring-boot-starter-test') {
-        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+        implementation fileTree(dir: rootProjectLibs, include: "**/*.jar")
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom("org.springframework.boot:spring-boot-dependencies:${vers.spring_boot}")
+        }
+    }
+
+    compileJava.dependsOn(processResources)
+}
+
+// 清除编译后文件
+task clear {
+    doLast {
+        delete rootProject.buildDir
+        delete subprojects.buildDir
+
+        subprojects.each { project ->
+            def projectDir = project.projectDir.toString()
+            def outDir = projectDir + "/out"
+            def flag = delete outDir
+
+            println(flag ? "\n==> 删除成功\n[" + outDir : "\n==> 未找到out文件夹\n" + outDir)
+        }
     }
 }
 
-test {
-    failFast = true
-    useJUnitPlatform()
-    testLogging { showStandardStreams = true }
-}
+// 升级命令
+// gradle wrapper --gradle-version=6.2.2
+
+// 强制清除 gradle 依赖缓存
+// gradle build --refresh-dependencies --stacktrace
+
+// 查看依赖树
+// gradle :well-starter:spring-boot-starter-well-exception:dependencies --configuration compile
+// gradle :well-starter:spring-boot-starter-well-exception:dependencies > dependencies.txt

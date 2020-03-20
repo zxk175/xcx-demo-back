@@ -1,0 +1,29 @@
+apply plugin: "org.springframework.boot"
+
+jar {
+    setArchivesBaseName("well-xcx-back")
+}
+
+dependencies {
+    implementation libs.lombok
+    annotationProcessor libs.lombok
+    testAnnotationProcessor libs.lombok
+
+    implementation([
+            libs.boot_web,
+            libs.boot_redis,
+            libs.boot_undertow,
+            libs.boot_actuator,
+
+            libs.swagger2,
+            libs.swagger2_ui,
+
+            libs.fast_json,
+            libs.hutool_core,
+
+            libs.bcprov_jdk15,
+            libs.commons_pool2,
+            libs.okhttp3,
+            libs.tuple,
+    ])
+}

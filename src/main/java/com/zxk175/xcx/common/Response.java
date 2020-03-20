@@ -12,7 +12,8 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * 返回结果
+ * @author zxk175
+ * @since 2020-03-20 09:37
  */
 @Data
 @NoArgsConstructor
@@ -147,4 +148,5 @@ public class Response<T> implements Serializable {
                 .setCode(code)
                 .setMsg(msg);
     }
+
 }

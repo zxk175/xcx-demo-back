@@ -1,8 +1,8 @@
 package com.zxk175.xcx.module.controller;
 
-import com.zxk175.xcx.bean.WxXcxDecodePhoneParam;
-import com.zxk175.xcx.bean.WxXcxLoginParam;
 import com.zxk175.xcx.common.Response;
+import com.zxk175.xcx.module.bean.WxXcxDecodePhoneParam;
+import com.zxk175.xcx.module.bean.WxXcxLoginParam;
 import com.zxk175.xcx.module.service.IWxXcxAuthService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

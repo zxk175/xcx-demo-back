@@ -1,4 +1,4 @@
-package com.zxk175.xcx.bean;
+package com.zxk175.xcx.module.bean;
 
 import lombok.Data;
 

@@ -1,8 +1,8 @@
 package com.zxk175.xcx.module.service;
 
-import com.zxk175.xcx.bean.WxXcxDecodePhoneParam;
-import com.zxk175.xcx.bean.WxXcxLoginParam;
 import com.zxk175.xcx.common.Response;
+import com.zxk175.xcx.module.bean.WxXcxDecodePhoneParam;
+import com.zxk175.xcx.module.bean.WxXcxLoginParam;
 
 /**
  * @author zxk175

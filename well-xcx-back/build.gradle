@@ -25,5 +25,8 @@ dependencies {
             libs.commons_pool2,
             libs.okhttp3,
             libs.tuple,
+
+            libs.well_oss,
+            libs.well_exception,
     ])
 }

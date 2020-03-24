@@ -1,3 +1,12 @@
+oss:
+  ali:
+    access-key: xxx
+    access-secret: xxx
+    access-domain: xxx
+    end-point: https://oss-cn-shenzhen.aliyuncs.com
+    bucket-name: xxx
+    time-out: 300000
+
 server:
   port: 8080
   undertow:
